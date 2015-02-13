@@ -23,10 +23,10 @@ simguide.pdf  - CS:APP Guide to Simulators document
 ***********************************************************
 
 You can get a copy of this handout and Y86 tools from the git repository 
-"https://github.com/kini/cs429-asmlab.git". 
+"https://github.com/yichao0319/cs429-asmlab.git". 
 
     unix> cd <PATH TO WORK>
-    unix> git clone https://github.com/kini/cs429-asmlab.git
+    unix> git clone https://github.com/yichao0319/cs429-asmlab.git
     unix> cd cs429-asmlab
 
 You can find the Y86 tools "sim.tar" in the directory. Extract the codes 
