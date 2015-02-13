@@ -1,0 +1,207 @@
+***********************************************************
+The CS:APP ASM Lab
+Directions to Students
+***********************************************************
+
+In this lab, you will transform three simple functions from C into Y86 
+assembly and test them against a simulator. The purpose of this is to 
+give you practice with assembly level programming in general, and with 
+the Y86 instruction set and tools in particular.
+
+
+***********************************************************
+0. Files:
+***********************************************************
+
+README        - This file
+sim.tar       - Archive of the Y86 tools in tar format
+simguide.pdf  - CS:APP Guide to Simulators document 
+
+
+***********************************************************
+1. Install Y86 Tools
+***********************************************************
+
+You can get a copy of this handout and Y86 tools from the git repository 
+"https://github.com/kini/cs429-asmlab.git". 
+
+    unix> cd <PATH TO WORK>
+    unix> git clone https://github.com/kini/cs429-asmlab.git
+    unix> cd cs429-asmlab
+
+You can find the Y86 tools "sim.tar" in the directory. Extract the codes 
+and build the tools with these commands:
+
+    unix> tar -xvf sim.tar
+    unix> cd sim
+    unix> make clean
+    unix> make
+
+IMPORTANT: some of you might get errors while building the tools. Please 
+read the error messages patiently because most of the problems can be 
+solved by installing additional packages (e.g. tcl-dev) to your system
+and you can find the tips about which to install from the error messages.
+
+
+***********************************************************
+2. Program Description
+***********************************************************
+
+You will be working in directory "sim/misc" for this lab.
+
+Your task is to write and simulate the following three Y86 programs. The 
+required behavior of these programs is defined by the example C functions 
+in "examples.c". Be sure to put your name and ID in a comment at the 
+beginning of each program.
+
+In all of your Y86 functions, you should follow the IA32 conventions for 
+the structure of the stack frame and for register usage instructions, 
+including saving and restoring any callee-save registers that you use.
+
+
+a) sum.ys
+
+Goal: iteratively sum linked list elements.
+
+Write a Y86 program "sum.ys" that iteratively sums the elements of a 
+linked list. Your program should consist of some code that sets up 
+the stack structure, invokes a function, and then halts. In this case, 
+the function should be Y86 code for a function ("sum_list") that is 
+functionally equivalent to the C "sum_list" function in "examples.c". 
+A sample three-element list for testing your code is as follows. Please 
+ensure you start your data with the label "input_data" so that I can test 
+your code with other test inputs. Your code should be able to take care 
+of linked lists of any length.
+
+# -----------------
+# Sample linked list 
+# -----------------
+.align 4
+input_data:
+ele1:
+    .long 0x00a
+    .long ele2
+ele2:
+    .long 0x0b0
+    .long ele3
+ele3:
+    .long 0xc00
+    .long 0
+# -----------------
+# End of sample linked list
+# -----------------
+
+For the given linked list, your function should return the sum 0xcba 
+in register %eax.
+
+
+b) rsum.ys
+
+Goal: recursively sum linked list elements.
+
+Write a Y86 program "rsum.ys" that recursively sums the elements of 
+a linked list. This code should be similar to the code in "sum.ys", 
+except that it should use a function "rsum_list" that recursively 
+sums a list of numbers, as shown in the C function "rsum_list" in 
+"examples.c". The input list looks exactly like the one used in 
+"sum.ys". Please ensure you start your data with the label "input_data" 
+so that I can test your code with other test inputs. Your code should 
+be able to take care of linked lists of any length.
+
+
+c) copy.ys
+
+Goal: copy a source block to a destination block.
+
+Write a program "copy.ys" that copies a block of words from one part 
+of memory to another (non-overlapping area) area of memory, computing 
+the checksum (Xor) of all the words copied.
+
+Your program should consist of code that sets up a stack frame, invokes 
+a function "copy_block", and then halts. The function should be functionally 
+equivalent to the C function "copy_block" in "examples.c". A sample 
+three-element source and destination block for testing your code is as 
+follows. Please ensure you start your source block with the label "src" 
+and the destination block with the label "dest" so that I can test your 
+code with other test inputs. Your code should be able to take care of 
+blocks of any length. You can assume the destination block follows immediately 
+after the source block, so that you can initialize block size as the difference 
+between "dst" and "src".
+
+
+# -----------------
+# Sample src and dst blocks
+# -----------------
+.align 4
+# Source block
+src:
+    .long 0x00a
+    .long 0x0b0
+    .long 0xc00
+# Destination block
+dest:
+    .long 0x111
+    .long 0x222
+    .long 0x333
+# -----------------
+# End of sample src and dst blocks
+# -----------------
+
+For the given test input, the function should return the sum 0xcba in 
+register %eax, copy the three words 0x00a, 0x0b, and 0xc to the 12 
+contiguous memory locations beginning at address "dest", and not corrupt 
+other memory locations.
+
+
+***********************************************************
+3. Execute the Programs
+***********************************************************
+
+Invoke the Y86 assembler to convert your Y86 assembly code to byte code:
+
+    unix> ./yas sum.ys
+
+This will generate the Y86 machine-level program in "sum.yo". Then you 
+can use the Y86 instruction simulator to execute your program:
+
+    unix> ./yis sum.yo
+
+YIS will simulate the execution of the program and print changes to any 
+registers or memory locations. The correct register and memory state is 
+mentioned in Program Description section above.
+
+
+***********************************************************
+4. Evaluation
+***********************************************************
+
+The lab is worth 100 points: 30 points for each Y86 solution program, and
+10 points for including your name, EID and readable comments in the codes. 
+Each solution program will be evaluated for correctness, including proper 
+handling of the stack and registers, as well as functional equivalence 
+with the example C functions in "examples.c".
+
+The programs "sum.ys" and "rsum.ys" will be considered correct if the graders 
+do not spot any errors in them, and their respective "sum_list" and "rsum_list" 
+functions pass all the test cases.
+
+The program "copy.ys" will be considered correct if the graders do not spot 
+any errors in them, and the copy block function passes all test cases and does 
+not corrupt any other memory locations except the ones following "dest".
+
+
+***********************************************************
+5. Submission
+***********************************************************
+
+Upload "sum.ys", "rsum.ys", and "copy.ys" to Canvas and submit them.
+
+IMPORTANT:
+Before submission, double check your codes:
+a) put your name and ID in a comment at the beginning of each program.
+b) use the specified label names (e.g. input_data, src, dst)
+c) your codes should be complete, 
+   i.e. include the initial setup for the stack, SP, and BP;
+        call to your procedure with arguments;
+        HALT after return from your procedure, and etc.
+
